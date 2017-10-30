@@ -1,4 +1,4 @@
-pragma solidity 0.4.8;
+pragma solidity 0.4.15;
 
 contract Debts {
     address public owner;
@@ -37,20 +37,14 @@ contract Debts {
         return true;
     }
 
-    function _assert(bool _assertion) internal {
-        if (!_assertion) {
-            throw;
-        }
-    }
-
     function _safeSub(uint _a, uint _b) internal constant returns(uint) {
-        _assert(_b <= _a);
+        require(_b <= _a);
         return _a - _b;
     }
 
     function _safeAdd(uint _a, uint _b) internal constant returns(uint) {
         uint c = _a + _b;
-        _assert(c >= _a);
+        require(c >= _a);
         return c;
     }
 }
