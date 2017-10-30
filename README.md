@@ -2,7 +2,7 @@
 
 # Installation
 
-**NodeJS 6.x+ must be installed along with build-essential as a prerequisite.**
+**NodeJS 8.x+ must be installed along with build-essential as a prerequisite.**
 ```
 $ npm install
 ```
