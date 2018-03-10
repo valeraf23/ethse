@@ -8,7 +8,7 @@ contract('OffChain', function(accounts) {
 
   const asserts = Asserts(assert);
   const OWNER = accounts[0];
-  let debts;
+  let offChain;
 
   before('setup', () => {
       const borrower = accounts[3];
