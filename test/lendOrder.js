@@ -23,7 +23,7 @@ contract('OffChain', function(accounts) {
     const value = 1000;
     return Promise.resolve()
     .then(() => offChain.lendMoney(value, {from: borrower}))
-    .then(() => offChain.repayMoney(borrower, value, {from: OWNER}))
+    .then(() => offChain.repayMoney(value, borrower, {from: OWNER}))
     .then(() => offChain.balanceByAddr(borrower))
     .then(asserts.equal(0));
   });
