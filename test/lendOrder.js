@@ -14,7 +14,7 @@ contract('OffChain', function(accounts) {
       const borrower = accounts[3];
     return OffChain.deployed()
     .then(instance => offChain = instance)
-    .then(offChain.register('VF',{from: borrower}))
+    .then(offChain.register.call('VF',{from: borrower}))
     .then(reverter.snapshot);
   });
 
