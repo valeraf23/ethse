@@ -24,7 +24,7 @@ contract('OffChain', function(accounts) {
     return Promise.resolve()
     .then(() => offChain.lendMoney(value, {from: borrower}))
     .then(() => offChain.repayMoney(value, borrower, {from: OWNER}))
-    .then(() => offChain.balanceByAddr(borrower))
+    .then(() => offChain.balanceByAddr[borrower])
     .then(asserts.equal(0));
   });
 
