@@ -73,7 +73,7 @@ contract('Debts', function(accounts) {
   it('should not allow owner to borrow', () => {
     const value = 1000;
     return Promise.resolve()
-    .then(() => debts.borrow(value, {from: OWNER}))
+    .then(() => debts.borrow.call(value, {from: OWNER}))
     .then(asserts.equal(false));
   });
 
@@ -81,7 +81,7 @@ contract('Debts', function(accounts) {
     const borrower = accounts[3];
     const value = 1000;
     return Promise.resolve()
-    .then(() => debts.repay(borrower, value, {from: borrower}))
+    .then(() => debts.repay.call(borrower, value, {from: borrower}))
     .then(asserts.equal(false));
   });
 });
