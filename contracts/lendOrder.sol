@@ -1,7 +1,7 @@
 pragma solidity 0.4.15;
 
-import "./ownable.sol";
-import "./SafeMath.sol";
+const Ownable = artifacts.require('./ownable.sol');
+const SafeMath = artifacts.require('./SafeMath.sol');
 
 contract OffChain is Ownable{
 
