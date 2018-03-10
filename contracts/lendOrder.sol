@@ -1,11 +1,6 @@
 pragma solidity 0.4.15;
 
-const Ownable = artifacts.require('./ownable.sol');
-const SafeMath = artifacts.require('./SafeMath.sol');
-
-contract OffChain is Ownable{
-
- using SafeMath for uint256;
+contract OffChain{
 
     event NewOrder(uint id, uint _amount);
     event NewUser(string _userName);
