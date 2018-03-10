@@ -47,7 +47,14 @@ contract('Debts', function(accounts) {
     });
   });
 
-  it('should allow to borrow');
+  it('should allow to borrow' () => {
+    const borrower = accounts[3];
+    const value = 1000;
+    return Promise.resolve()
+    .then(() => debts.borrow(value, {from: borrower}))
+    .then(() => debts.debts(borrower))
+    .then(asserts.equal(value));
+  });
 
   it('should emit Repayed event on repay');
 
