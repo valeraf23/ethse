@@ -1,7 +1,6 @@
 pragma solidity 0.4.15;
 
-contract OffChain{
-
+contract LendOrder{
     address public owner;
     event NewOrder(uint id, uint _amount);
     event NewUser(string _userName);
@@ -63,7 +62,7 @@ contract OffChain{
         _;
     }
 
-    function OffChain() {
+    function LendOrder() {
         owner = msg.sender;
     }
 
