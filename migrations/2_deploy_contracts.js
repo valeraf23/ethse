@@ -1,5 +1,5 @@
 const Debts = artifacts.require('./Debts.sol');
-const LendOrder = artifacts.require('./lendOrder.sol');
+const OffChain = artifacts.require('./lendOrder.sol');
 const Ownable = artifacts.require('./ownable.sol');
 const SafeMath = artifacts.require('./SafeMath.sol');
 
