@@ -25,7 +25,7 @@ contract OffChain is Ownable{
 
     function lendMoney(uint _amount) public onlyKnownUser() moreThanZero(_amount) {
         uint id = orders.push(Order(userNameByAddr[msg.sender], _amount, uint32(now),"lend")) - 1;
-        balanceByAddr[msg.sender] = balanceByAddr[msg.sender].add(_amount);
+        balanceByAddr[msg.sender] =_safeAdd( balanceByAddr[msg.sender], _amount);
         NewOrder(id, _amount);
     }
 
@@ -33,7 +33,7 @@ contract OffChain is Ownable{
         require(_debtorAddress > 0x0);
         require(balanceByAddr[_debtorAddress] >= _amount);
         uint id = orders.push(Order(userNameByAddr[_debtorAddress],_amount, uint32(now),"repay")) - 1;
-        balanceByAddr[_debtorAddress] = balanceByAddr[_debtorAddress].sub(_amount);
+        balanceByAddr[_debtorAddress] = _safeSub( balanceByAddr[_debtorAddress], _amount);
         NewOrder(id, _amount);
     }
 
@@ -58,5 +58,27 @@ contract OffChain is Ownable{
         userIdByAddr[msg.sender] = uint(keccak256(_name));
         userNameByAddr[msg.sender] = _name;
         NewUser(_name);
+    }
+
+    modifier onlyOwner() {
+        if (msg.sender != owner) {
+            return;
+        }
+        _;
+    }
+
+    function OffChain() {
+        owner = msg.sender;
+    }
+
+    function _safeSub(uint _a, uint _b) internal constant returns(uint) {
+        require(_b <= _a);
+        return _a - _b;
+    }
+
+    function _safeAdd(uint _a, uint _b) internal constant returns(uint) {
+        uint c = _a + _b;
+        require(c >= _a);
+        return c;
     }
 }
