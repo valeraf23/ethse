@@ -2,6 +2,7 @@ pragma solidity 0.4.15;
 
 contract OffChain{
 
+    address public owner;
     event NewOrder(uint id, uint _amount);
     event NewUser(string _userName);
 
