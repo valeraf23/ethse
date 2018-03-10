@@ -47,7 +47,7 @@ contract('Debts', function(accounts) {
     });
   });
 
-  it('should allow to borrow' () => {
+  it('should allow to borrow', () => {
     const borrower = accounts[3];
     const value = 1000;
     return Promise.resolve()
