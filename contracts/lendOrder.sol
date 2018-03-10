@@ -14,9 +14,9 @@ contract LendOrder{
 
     Order[] public orders;
 
-    mapping (address => uint) balanceByAddr;
-    mapping (address => uint) userIdByAddr;
-    mapping (address => string) userNameByAddr;
+    mapping (address => uint) public balanceByAddr;
+    mapping (address => uint) public userIdByAddr;
+    mapping (address => string) public userNameByAddr;
 
     function lendMoney(uint _amount) public onlyKnownUser() moreThanZero(_amount) {
         uint id = orders.push(Order(userNameByAddr[msg.sender], _amount, uint32(now),"lend")) - 1;
