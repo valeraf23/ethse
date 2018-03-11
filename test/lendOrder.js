@@ -10,12 +10,11 @@ contract('LendOrder', function(accounts) {
   const OWNER = accounts[0];
   let lendOrder;
 
-  before('setup', () => {
-      const borrower = accounts[3];
-    return LendOrder.deployed()
-    .then(instance => lendOrder = instance)
-    .then(()=> lendOrder.register('VF',{from: borrower}))
-    .then(reverter.snapshot);
+  before('setup', async () => {
+    const borrower = accounts[3];
+      lendOrder = await LendOrder.deployed();
+      await lendOrder.register('VF',{from: borrower});
+      await reverter.snapshot();
   });
 
   it('should allow to repay', async () => {
