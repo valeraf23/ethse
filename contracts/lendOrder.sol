@@ -56,11 +56,9 @@ contract LendOrder{
     }
 
     modifier onlyOwner() {
-        if (msg.sender != owner) {
-            return;
-        }
-        _;
-    }
+  require(msg.sender == owner);
+  _;
+}
 
     function LendOrder() {
         owner = msg.sender;
