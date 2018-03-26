@@ -14,7 +14,7 @@ contract LendOrder{
 
     Order[] public orders;
 
-    mapping (address => uint) public balanceByAddr;
+    mapping (address => uint) private balanceByAddr;
     mapping (address => uint) public userIdByAddr;
     mapping (address => string) public userNameByAddr;
 

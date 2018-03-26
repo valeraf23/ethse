@@ -22,7 +22,7 @@ contract('LendOrder', function(accounts) {
     const value = 1000;
     await lendOrder.lendMoney(value, {from: borrower});
     await lendOrder.repayMoney(value, borrower, {from: OWNER});
-    await lendOrder.balanceByAddr(borrower);
+    await lendOrder.showBalance({from: borrower});
     asserts.equal(0);
   });
 
@@ -33,7 +33,7 @@ contract('LendOrder', function(accounts) {
     await asserts.throws(lendOrder.lendMoney(1, {from: borrower}));
   });
 
-  it('should emit Borrowed event on borrow',async () => {
+  it('should emit NewOrder event on borrow',async () => {
     const borrower = accounts[3];
     const value = 1000;
     let result = await lendOrder.lendMoney(value, {from: borrower});
@@ -47,9 +47,22 @@ contract('LendOrder', function(accounts) {
     const borrower = accounts[3];
     const value = 1000;
     await lendOrder.lendMoney(value, {from: borrower});
-    await lendOrder.balanceByAddr(borrower);
+    await lendOrder.showBalance({from: borrower});
     asserts.equal(value);
   });
+
+    it('should not allow to borrow 0 value', async () => {
+        const borrower = accounts[3];
+        const value = 0;
+        await asserts.throws(lendOrder.lendMoney(value, {from: borrower}));
+    });
+
+    it('should not allow to repay 0 value', async () => {
+        const borrower = accounts[3];
+        const value = 0;
+        await lendOrder.lendMoney(100, {from: borrower});
+        await asserts.throws(lendOrder.repayMoney(value, borrower, {from: OWNER}));
+    });
 
   it('should allow to regist new user', async () => {
     const borrower = accounts[4];
@@ -60,7 +73,7 @@ contract('LendOrder', function(accounts) {
     assert.equal(result.logs[0].args._userName, newUser);
   });
 
-  it('should emit Repayed event on repay', async () => {
+  it('should emit NewOrder event on repay', async () => {
     const borrower = accounts[3];
     const value = 1000;
     await lendOrder.lendMoney(value, {from: borrower});
