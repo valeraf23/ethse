@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity 0.4.15;
 
 import "./OxoFactory.sol";
 
@@ -7,24 +7,6 @@ contract OXO is OxoFactory{
  	event StepEvent(address player, uint fileld, State state);
  	event GameOverEvent(State state);
 	event TransferEvent(string _text, address _to, uint _value);
-
-	modifier onlyEmptyCell(uint _field){
-	    Game memory game = gameById[getGameId()];
-		require (_field <= 8 && (game.board[_field] == uint(keccak256("empty"))));
-		_;
-	}
-
-	modifier onlyWaitThisPlayer(){
-        Game memory game = gameById[getGameId()];
-        require(game.next == msg.sender && game.countPlayers == 2);
-       _;
-	 }
-
-	 modifier stillCanPlay(){
-        Game memory game = gameById[getGameId()];
-        require(game.countOfMove <= 9 && (game.state != State.WinnerPlayerOne && game.state != State.WinnerPlayerTwo && game.state != State.Draw ));
-       _;
-	 }
 
 	 function doStep(uint _field) stillCanPlay() onlyWaitThisPlayer() onlyEmptyCell(_field) public{
 	   Game memory game = gameById[getGameId()];
@@ -46,7 +28,7 @@ contract OXO is OxoFactory{
 		gameById[getGameId()] = game;
     }
 
-    function checkDraw(Game _game) internal returns(State){
+    function checkDraw(Game _game) private returns(State){
 		if( _game.countOfMove == 9){
 			GameOverEvent(State.Draw);
 			transfer(_game.playerOne, _game.money /2);
@@ -57,7 +39,7 @@ contract OXO is OxoFactory{
 		}
 	}
 
-	function checkWinner(Game _game,uint _field) internal returns(State){
+	function checkWinner(Game _game,uint _field) private returns(State){
 		uint[] memory board = _game.board;
 		uint _cell = _game.board[_field];
 
@@ -86,5 +68,23 @@ contract OXO is OxoFactory{
 		_to.transfer(_value);
 		TransferEvent('User get money', _to, _value);
 		return true;
+	}
+
+	modifier onlyEmptyCell(uint _field){
+		Game memory game = gameById[getGameId()];
+		require (_field <= 8 && (game.board[_field] == uint(keccak256("empty"))));
+		_;
+	}
+
+	modifier onlyWaitThisPlayer(){
+		Game memory game = gameById[getGameId()];
+		require(game.next == msg.sender && game.countPlayers == 2);
+		_;
+	}
+
+	modifier stillCanPlay(){
+		Game memory game = gameById[getGameId()];
+		require(game.countOfMove <= 9 && (game.state != State.WinnerPlayerOne && game.state != State.WinnerPlayerTwo && game.state != State.Draw ));
+		_;
 	}
 }

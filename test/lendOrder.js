@@ -47,8 +47,8 @@ contract('LendOrder', function(accounts) {
     const borrower = accounts[3];
     const value = 1000;
     await lendOrder.lendMoney(value, {from: borrower});
-    await lendOrder.balanceByAddr(borrower);
-    asserts.equal(value);
+    let result = await lendOrder.balanceByAddr.call(borrower);
+    asserts.equal(value,result);
   });
 
   it('should allow to regist new user', async () => {

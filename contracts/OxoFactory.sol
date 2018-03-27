@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity 0.4.15;
 
 contract OxoFactory {
 
@@ -58,6 +58,10 @@ contract OxoFactory {
 
     function joinToGameById(uint _id) payable public onlyKnownUser onlyFinishGame returns(bool){
 	       Game storage game = gameById[_id];
+			if(keccak256(game.status) == keccak256("")){
+				EventMessage("You could not join to not exist game");
+				return false;
+			}
 	       if( game.countPlayers == 2){
 	           EventMessage("You could not join to this game, because there are already to players");
 	          return false;

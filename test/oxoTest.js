@@ -141,7 +141,7 @@ contract('oxo', function(accounts) {
         await oxo.createNewGame({from: firstPlayer});
         await oxo.firstPlayer({from: firstPlayer});
         await oxo.secondPlayer({from: secondPlayer});
-        await asserts.throws(oxo.joinToGameById.call(0, {from: firstPlayer}));
+        await asserts.throws(oxo.joinToGameById(0, {from: firstPlayer}));
     });
 
     it('should allow choose first player', async () => {
@@ -336,17 +336,17 @@ contract('oxo', function(accounts) {
     });
 
     it('Check the 8-th winner combination', async () => {
-    await oxo.createNewGame({from: firstPlayer});
-    await oxo.firstPlayer({from: firstPlayer});
-    await oxo.joinToGameById(0, {from: secondPlayer});
-    await oxo.secondPlayer({from: secondPlayer});
-    await oxo.doStep(2, {from: firstPlayer});
-    await oxo.doStep(3, {from: secondPlayer});
-    await oxo.doStep(4, {from: firstPlayer});
-    await oxo.doStep(5, {from: secondPlayer});
-    await oxo.doStep(6, {from: firstPlayer});
-    let game = await oxo.gameById.call(0);
-    assert.equal(game[6], "The Winner First Player ( X )");
+           await oxo.createNewGame({from: firstPlayer});
+           await oxo.firstPlayer({from: firstPlayer});
+           await oxo.joinToGameById(0, {from: secondPlayer});
+           await oxo.secondPlayer({from: secondPlayer});
+           await oxo.doStep(2, {from: firstPlayer});
+           await oxo.doStep(3, {from: secondPlayer});
+           await oxo.doStep(4, {from: firstPlayer});
+           await oxo.doStep(5, {from: secondPlayer});
+           await oxo.doStep(6, {from: firstPlayer});
+           let game = await oxo.gameById.call(0);
+           assert.equal(game[6], "The Winner First Player ( X )");
 });
     it('Check Draw combinations', async () => {
         const obj = json.parse(fs.readFileSync('test/oxo.json')).combinations;
@@ -403,5 +403,18 @@ contract('oxo', function(accounts) {
         await oxo.createNewGame({from: firstPlayer, value:money} );
         await oxo.firstPlayer({from: firstPlayer});
         await asserts.throws(oxo.joinToGameById(0, {from: secondPlayer, value:10}));
+    });
+
+    it('Could not join to not exist game, get event', async () => {
+
+        let result = await oxo.joinToGameById(0, {from: firstPlayer});
+        assert.equal(result.logs.length, 1);
+        assert.equal(result.logs[0].event, 'EventMessage');
+        assert.equal(result.logs[0].args._text, "You could not join to not exist game");
+    });
+
+    it('Could not join to not exist game , get false result', async () => {
+        let result = await oxo.joinToGameById.call(0, {from: firstPlayer});
+        asserts.equal(result,false);
     });
 });
