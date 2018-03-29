@@ -360,7 +360,7 @@ contract('oxo', function(accounts) {
             let result;
             for (let i=0; i<combination.length; i++) {
                 if(i%2){
-                    await oxo.doStep(parseInt(combination[i]), {from: secondPlayer});
+                    result = await oxo.doStep(parseInt(combination[i]), {from: secondPlayer});
                 }else{
                     result = await oxo.doStep(parseInt(combination[i]), {from: firstPlayer});
                 }
@@ -368,6 +368,7 @@ contract('oxo', function(accounts) {
             let game = await oxo.gameById.call(n);
             assert.equal(game[7], money*2);
             assert.equal(game[6], "The Draw");
+            assert.equal(result.logs[0].event, 'GameOverEvent');
             assert.equal(result.logs[1].event, 'TransferEvent');
             assert.equal(result.logs[1].args._text, "User get money");
             assert.equal(result.logs[1].args._to, firstPlayer);

@@ -10,16 +10,16 @@ contract OXO is OxoFactory{
 
 	 function doStep(uint _field) stillCanPlay() onlyWaitThisPlayer() onlyEmptyCell(_field) public{
 	   Game memory game = gameById[getGameId()];
-		game.board[_field] = (msg.sender == game.playerOne)? uint(keccak256("x")) : uint(keccak256("o"));
-		State _state = game.state;
+		game.board[_field] = getUintOfStep(game);
+		State _state;
 		game.countOfMove ++ ;
 		if(game.countOfMove >= 5){
-		    _state = checkWinner(game, _field);
-			if(_state != State.WinnerPlayerOne && _state != State.WinnerPlayerTwo ){
-		    	_state = checkDraw(game);
+		  _state = checkWinner(game);
+			if(_state != State.WinnerPlayerOne && _state != State.WinnerPlayerTwo && game.countOfMove >= 8){
+		     _state = checkDraw(game);
 			}
 		}else{
-    		_state =  stateForNextPlayer(game);
+		 _state = stateForNextPlayer(game);
 		}
 		StepEvent(msg.sender, _field, _state);
 		game.state = _state;
@@ -29,37 +29,53 @@ contract OXO is OxoFactory{
     }
 
     function checkDraw(Game _game) private returns(State){
-		if( _game.countOfMove == 9){
-			GameOverEvent(State.Draw);
+
+		uint[] memory board = _game.board;
+		uint _cell = (msg.sender == _game.playerOne)? uint(keccak256("o")) : uint(keccak256("x"));
+
+		if((_cell == board[0] || _cell == board[1] || _cell == board[2])&&
+		(_cell == board[3] || _cell == board[4] || _cell == board[5])&&
+		(_cell == board[6] || _cell == board[7] || _cell == board[8])&&
+		(_cell == board[0] || _cell == board[3] || _cell == board[6])&&
+		(_cell == board[1] || _cell == board[4] || _cell == board[7])&&
+		(_cell == board[2] || _cell == board[5] || _cell == board[8])&&
+		(_cell == board[0] || _cell == board[4] || _cell == board[8])&&
+			(_cell == board[2] || _cell == board[4] || _cell == board[6])){
+			State _newState = State.Draw;
+			GameOverEvent(_newState);
 			transfer(_game.playerOne, _game.money /2);
 			transfer(_game.playerTwo, _game.money /2);
-			return State.Draw;
+			return _newState;
 		}else{
-		   return _game.state;
+			return stateForNextPlayer(_game);
 		}
 	}
 
-	function checkWinner(Game _game,uint _field) private returns(State){
+	function checkWinner(Game _game) private returns(State){
 		uint[] memory board = _game.board;
-		uint _cell = _game.board[_field];
+		uint _cell = getUintOfStep(_game);
 
         if((_cell == board[0] && _cell == board[1] && _cell == board[2])||
-           (_cell == board[3] && _cell == board[4] && _cell == board[5])||
-           (_cell == board[6] && _cell == board[7] && _cell == board[8])||
-           (_cell == board[0] && _cell == board[3] && _cell == board[6])||
-           (_cell == board[1] && _cell == board[4] && _cell == board[7])||
-           (_cell == board[2] && _cell == board[5] && _cell == board[8])||
-           (_cell == board[0] && _cell == board[4] && _cell == board[8])||
-           (_cell == board[2] && _cell == board[4] && _cell == board[6])){
-				State _newState = (_cell == uint(keccak256("x"))) ? State.WinnerPlayerOne : State.WinnerPlayerTwo;
-				GameOverEvent(_newState);
-				transfer(msg.sender, _game.money);
-                return _newState;
-            }else{
-                return stateForNextPlayer(_game);
-            }
+         (_cell == board[3] && _cell == board[4] && _cell == board[5])||
+         (_cell == board[6] && _cell == board[7] && _cell == board[8])||
+         (_cell == board[0] && _cell == board[3] && _cell == board[6])||
+         (_cell == board[1] && _cell == board[4] && _cell == board[7])||
+         (_cell == board[2] && _cell == board[5] && _cell == board[8])||
+         (_cell == board[0] && _cell == board[4] && _cell == board[8])||
+         (_cell == board[2] && _cell == board[4] && _cell == board[6])){
+			State _newState = (_cell == uint(keccak256("x"))) ? State.WinnerPlayerOne : State.WinnerPlayerTwo;
+			GameOverEvent(_newState);
+			transfer(msg.sender, _game.money);
+             return _newState;
+        }else{
+            return stateForNextPlayer(_game);
+        }
     }
-
+	
+    function getUintOfStep(Game _game) private returns(uint){
+		return (msg.sender == _game.playerOne)? uint(keccak256("x")) : uint(keccak256("o"));
+	}
+	
 	function stateForNextPlayer(Game _game) private returns(State){
 		return (msg.sender == _game.playerOne)? State.WaitStepSecondPlayer : State.WaitStepFirstPlayer;
 	}
