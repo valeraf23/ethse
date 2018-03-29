@@ -16,7 +16,7 @@ contract OXO is OxoFactory{
 		if(game.countOfMove >= 5){
 		  _state = checkWinner(game);
 			if(_state != State.WinnerPlayerOne && _state != State.WinnerPlayerTwo && game.countOfMove >= 8){
-		     _state = checkDraw(game);
+		        _state = checkDraw(game);
 			}
 		}else{
 		 _state = stateForNextPlayer(game);
