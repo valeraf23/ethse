@@ -407,7 +407,6 @@ contract('oxo', function(accounts) {
     });
 
     it('Could not join to not exist game, get event', async () => {
-
         let result = await oxo.joinToGameById(0, {from: firstPlayer});
         assert.equal(result.logs.length, 1);
         assert.equal(result.logs[0].event, 'EventMessage');
@@ -418,4 +417,14 @@ contract('oxo', function(accounts) {
         let result = await oxo.joinToGameById.call(0, {from: firstPlayer});
         asserts.equal(result,false);
     });
+
+    it('Should not allow use value higher than 8', async () => {
+        let money = 100;
+        await oxo.createNewGame({from: firstPlayer, value:money} );
+        await oxo.firstPlayer({from: firstPlayer});
+        await oxo.joinToGameById(0, {from: secondPlayer, value:money});
+        await oxo.secondPlayer({from: secondPlayer});
+        await asserts.throws(oxo.doStep(9, {from: firstPlayer}));
+    });
+
 });

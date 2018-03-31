@@ -8,9 +8,9 @@ contract OXO is OxoFactory{
  	event GameOverEvent(State state);
 	event TransferEvent(string _text, address _to, uint _value);
 
-	 function doStep(uint _field) stillCanPlay() onlyWaitThisPlayer() onlyEmptyCell(_field) public{
+	 function doStep(uint8 _field) stillCanPlay() onlyWaitThisPlayer() onlySuitableNumberOfStep(_field) public {
 	   Game memory game = gameById[getGameId()];
-		game.board[_field] = getUintOfStep(game);
+		game.board[_field] = getHashStep(game);
 		State _state;
 		game.countOfMove ++ ;
 		if(game.countOfMove >= 5){
@@ -53,7 +53,7 @@ contract OXO is OxoFactory{
 
 	function checkWinner(Game _game) private returns(State){
 		uint[] memory board = _game.board;
-		uint _cell = getUintOfStep(_game);
+		uint _cell = getHashStep(_game);
 
         if((_cell == board[0] && _cell == board[1] && _cell == board[2])||
          (_cell == board[3] && _cell == board[4] && _cell == board[5])||
@@ -72,7 +72,7 @@ contract OXO is OxoFactory{
         }
     }
 	
-    function getUintOfStep(Game _game) private returns(uint){
+    function getHashStep(Game _game) private returns(uint){
 		return (msg.sender == _game.playerOne)? uint(keccak256("x")) : uint(keccak256("o"));
 	}
 	
@@ -86,7 +86,7 @@ contract OXO is OxoFactory{
 		return true;
 	}
 
-	modifier onlyEmptyCell(uint _field){
+	modifier onlySuitableNumberOfStep(uint8 _field){
 		Game memory game = gameById[getGameId()];
 		require (_field <= 8 && (game.board[_field] == uint(keccak256("empty"))));
 		_;
