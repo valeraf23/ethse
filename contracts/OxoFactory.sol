@@ -155,7 +155,6 @@ contract OxoFactory {
         if( state == State.Draw ){
             return "The Draw";
         }
-
     }
 
 	modifier onlyKnownUser () {
